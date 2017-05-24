@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<!--
+ACIT2520 Midterm Project
+Author: Fan Zhang
+Set: 2A
+File: main.html
+Description:
+All customizations and bonus completed and tested.
+
+MORE USER CUSTOMIZATION
+MORE TOPIC CUSTOMIZATION
+MORE CHAT CUSTOMIZATION 
+BONUS: USER CREATION AND RETRIEVAL 
+
+-->
+
+	<head>
+		<title>Aion Chat</title>
+		<link href="/css/style.css" rel="stylesheet" />
+	</head>
+	
+	<body>
+		<!-- Header
+				New header tag to contain general banner, the image and layout were taken from the course webpage source code. 
+		-->
+		<header id="banner">
+
+        </header>
+		<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+		<!-- Navigation 
+		-->
+			<nav id="main_nav">
+
+				<button id="Main" class="gradient" onclick="location.href='/public/main.html'" >Main &raquo;</button>
+				<button id="edit" class="gradient">Edit Profile &raquo;</button>
+				<script src="/scripts/indexbundle.js"></script>
+				<button id ="create" class="gradient">Create Topics &raquo;</button>
+				<script>
+					document.getElementById("create").addEventListener("click",function(){
+					location.href="/createtopic";
+					});
+				</script>
+				
+			</nav>
+		
+		<div id="container">
+
+				<main id="content" class="column">
+					<article>
+						<h2>Welcome to the Aion chatroom</h2>
+						
+						<h3></h3>
+						<p>Please create your profile or click on topics to start chatting.	
+						</p>
+						<input type='text' placeholder="username" id='username'> <br>
+						<input type='text' placeholder="password" id='password'> 
+						<br>
+						<br>
+						<button id ="login" class="gradient">Login &raquo;</button>
+                        <br>
+                        <br>
+                        <div id="loginfo"></div>
+					</article>	
+                    <script>
+					document.getElementById("login").addEventListener("click",function(){
+						$.ajax({
+							url:"/",
+							type:"post",
+							data:{
+								name: document.getElementById("username").value,
+								password: document.getElementById("password").value
+							},
+							success:function(resp){
+								console.log("fantest---" + resp);
+								if(resp.exist=="true"){
+								   var ndiv= document.createElement("text");
+									ndiv.innerHTML="Welcome back "+ resp.arr.name+"!";
+									document.getElementById("loginfo").appendChild(ndiv);
+								}
+								else{
+									var ndiv= document.createElement("text");
+									ndiv.innerHTML="No such user."
+								document.getElementById("loginfo").appendChild(ndiv);
+								}		
+							}
+						});
+					})
+                    </script>
+				</main>
+
+			</div>
+
+		<!-- Footer
+			New footer tag
+		-->
+		<footer id="footer_new">
+			<p id = "footer_p">Designed by Fan Zhang @ BCIT Acit 2520<br />
+			Copyright 2017. All rights reserved.</p>
+		</footer>
+	</body>
+</html>

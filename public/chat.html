@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<!--
+ACIT2520 Midterm Project
+Author: Fan Zhang
+Set: 2A
+File: chat.html
+
+-->
+    <head>
+        <title> Chatroom
+        </title>
+        <link href="/css/style.css" rel="stylesheet" />
+    </head>
+    <body>
+        <header id="banner">
+        </header>
+		<!-- Navigation 
+		-->
+		<nav id="main_nav">
+
+			<button id="Main" class="gradient" onclick="location.href='/public/main.html'" >Main &raquo;</button>
+			<button id="edit" class="gradient">Edit Profile &raquo;</button>
+			<script src="/scripts/indexbundle.js"></script>
+			<button id ="create" class="gradient">Create Topics &raquo;</button>
+			<script>
+				document.getElementById("create").addEventListener("click",function(){
+				location.href="/createtopic";
+				});
+			</script>
+			
+		</nav>
+		<div id="container">
+
+			<main id="content" class="column">
+				<article>
+					<div id="category" ></div>
+					<div id = "display"></div>
+					<div id = "status"></div>
+					<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+					<script src = "/socket.io/socket.io.js"></script>
+					<br>
+					<input class = "textarea" id="msg" placeholder="Type here"/>
+					<button id = "send" class="gradient">Send</button>
+					<script>
+						$.ajax({
+							url:"/createtopic/:type/:roomnumber",
+							type:"post",
+							data:{
+							type:"read"
+						},
+						success: function(resp){
+           
+             console.log(resp);
+             var icon=document.createElement("img");
+            if(resp.arr1.roomtype!=4)
+            {icon.src="/img/"+resp.arr1.roomtype+".jpg";}
+            else{icon.src=resp.url;}
+             document.getElementById("category").appendChild(icon);
+            var postTopic=document.createElement("div");
+            postTopic.style.display="inline-block";
+            var ndiv1= document.createElement("div");
+            ndiv1.innerHTML=resp.arr1.topic;
+            ndiv1.style.fontWeight="bold";
+			ndiv1.style.height="55px";
+            postTopic.appendChild(ndiv1);
+           var ndiv2= document.createElement("div");
+            ndiv2.innerHTML=resp.arr1.descrip;
+            ndiv1.style.fontSize="2em";
+            
+            ndiv2.style.fontSize="1em";
+            postTopic.appendChild(ndiv2);  document.getElementById("category").appendChild(postTopic);
+           var showinfo= document.createElement("div");
+           
+            if(resp.arr1.roomtype=="1")
+           {
+               showinfo.innerHTML="Room number "+resp.arr1.roomnumber +" of type: Dungeons.";
+           } else if(resp.arr1.roomtype=="2"){
+                showinfo.innerHTML="Room number "+resp.arr1.roomnumber +" of type: Gears.";
+           } else if(resp.arr1.roomtype=="3"){
+                showinfo.innerHTML="Room number "+resp.arr1.roomnumber +" of type: Battlegrounds.";
+           }else {
+               showinfo.innerHTML="Room number "+resp.arr1.roomnumber +" of type: Others.";
+           }
+            document.getElementById("category").appendChild(showinfo);
+            
+			//display all the previous chatcontents
+            for(var i=0; i< resp.arr2.length;i++){
+               var ndiv= document.createElement("div");
+              var ndiv1= document.createElement("div");
+                ndiv1.style.display="inline-block";
+                ndiv1.innerHTML=resp.arr2[i].who;
+                ndiv.appendChild(ndiv1);
+                if(resp.arr2[i].icon!="unknown"){
+             var ndiv2= document.createElement("img");
+                ndiv2.style.display="inline-block";
+                
+                ndiv2.src=resp.arr2[i].icon;
+                ndiv.appendChild(ndiv2);
+                }
+                var ndiv3= document.createElement("div");
+                ndiv3.innerHTML=": "+resp.arr2[i].what;
+                 ndiv3.style.display="inline-block";
+           
+              ndiv.appendChild(ndiv3);
+                 if(resp.arr2[i].gender=="female"){
+                ndiv1.style.color="pink";
+            }else if(resp.arr2[i].gender=="male"){
+                ndiv1.style.color="blue";
+            } document.getElementById("display").appendChild(ndiv);
+            
+            }
+            initSocket(resp.arr1.roomtype,resp.arr1.roomnumber);
+            
+            
+            
+         }        
+    })
+     
+     
+          function initSocket(roomtype,roomnumber)
+          {
+              var socket = io();
+              socket.emit("joinroom",roomtype,roomnumber);
+             document.getElementById("send").addEventListener("click",function(){
+                var obj={
+                
+                   userName:"",
+                   avatar:"", message:document.getElementById("msg").value,
+                    gender:""
+                };
+               $.ajax({
+                    url:"/createtopic/:type/:roomnumber",
+                    type:"post",
+                    data:{
+                        contents: obj.message,
+                        type:"create"
+                    },
+                    success:function(resp){
+                        
+                 
+                            obj.userName=resp.arr2[resp.arr2.length-1].who;
+                            obj.avatar=resp.arr2[resp.arr2.length-1].icon;
+                            obj.gender= resp.arr2[resp.arr2.length-1].gender;
+                        
+                    console.log(resp);
+                   socket.emit("send message",obj);
+                    }
+            
+                });
+             })
+          socket.on("create message",function(obj){
+                console.log(obj);
+                //var ndiv=document.createElement("div");
+               var ndiv= document.createElement("div");
+              var ndiv1= document.createElement("div");
+                ndiv1.style.display="inline-block";
+                ndiv1.innerHTML=obj.userName;
+                ndiv.appendChild(ndiv1);
+                if(obj.avatar!="unknown"){
+             var ndiv2= document.createElement("img");
+                ndiv2.style.display="inline-block";
+                
+                ndiv2.src=obj.avatar;
+                ndiv.appendChild(ndiv2);
+                }
+                var ndiv3= document.createElement("div");
+                ndiv3.innerHTML=": "+obj.message;
+                 ndiv3.style.display="inline-block";
+           
+              ndiv.appendChild(ndiv3);
+               //var ndiv4= document.createElement("div");
+               // ndiv4.innerHTML=": "+obj.gender;
+               //  ndiv4.style.display="inline-block";
+            if(obj.gender=="female"){
+                ndiv1.style.color="pink";
+            }else if(obj.gender=="male"){
+                ndiv1.style.color="blue";
+            }
+             // ndiv.appendChild(ndiv4);
+              
+                 document.getElementById("display").appendChild(ndiv);
+            })
+        }
+          
+          
+					</script> 
+				</article>								
+			</main>
+
+		</div>
+        
+    </body>
+
+</html>

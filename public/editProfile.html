@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<!--
+ACIT2520 Midterm Project
+Author: Fan Zhang
+Set: 2A
+File: editProfile.html
+
+-->
+
+	<head>
+		<title>User Profile</title>
+		<link href="/css/style.css" rel="stylesheet" />
+	</head>
+	
+	<body>
+		<!-- Header
+				New header tag to contain general banner, the image and layout were taken from the course webpage source code. 
+		-->
+        <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+		<header id="banner">
+        </header>
+		
+		<!-- Navigation 
+		-->
+			<nav id="main_nav">
+
+				<button id="Main" class="gradient" onclick="location.href='/public/main.html'" >Main &raquo;</button>
+				<button id="edit" class="gradient">Edit Profile &raquo;</button>
+				<script src="/scripts/indexbundle.js"></script>
+				<button id ="create" class="gradient">Create Topics &raquo;</button>
+				<script>
+					document.getElementById("create").addEventListener("click",function(){
+					location.href="/createtopic";
+					});
+				</script>
+				
+			</nav>
+		
+		<div id="container">
+
+				<main id="content" class="column">
+					<article>
+						<h2>Create your profile</h2>
+						<p>Please input your username:
+						<input type='text' placeholder="username" id='name'></p>
+						
+						<p>Please input your avatarlink:
+						<input type = "text" value="/img/a.png" id="avatar"></p>
+							
+						<p>Please choose your gender:</p>
+						<form>
+						<input type="radio" name="gender" value="male" id="b" checked> Male <img src ="/img/male.jpg">
+						<input type="radio" name="gender" value="female" id="g"> Female
+						<img src ="/img/female.jpg"><br>
+						</form>
+						<br>
+						<button id='save' class="gradient">save</button>
+						<div id="saveinfo"></div>
+                        <br>
+                        <br>
+                        <button id='createuser' class="gradient">Create User</button>
+						
+                        <div id="password"></div>
+						<script>
+                        document.getElementById("createuser").addEventListener("click",function(){
+						var input = document.createElement("input");
+						input.type= "text";
+						var alert = document.createElement("div");
+						alert.innerHTML="Please type in your password";
+						document.getElementById("password").appendChild(alert);
+						document.getElementById("password").appendChild(input);
+						var button1=document.createElement("button");
+						var buttontxt=document.createTextNode("Save password");
+						button1.appendChild(buttontxt);
+						document.getElementById("password").appendChild(button1);
+						button1.addEventListener("click",function(){
+							$.ajax({
+								url:"/createprofile",
+								type: "post",
+								data:{
+									password: input.value,
+									type:"create2"
+								},
+								success:function(resp){
+									console.log(resp);
+								}
+							})
+							document.getElementById("password").style.visibility="hidden";
+						})
+							
+							
+				});
+				
+				
+              
+                        
+                        </script>
+						
+                        
+                        <script src="/scripts/profilebundle.js"></script>
+                        
+                        
+					</article>								
+				</main>
+
+			</div>
+
+		<!-- Footer
+			New footer tag
+		-->
+		<footer id="footer_new">
+			<p id = "footer_p">Designed by Fan Zhang @ BCIT Acit 2520<br />
+			Copyright 2017. All rights reserved.</p>
+		</footer>
+	</body>
+</html>

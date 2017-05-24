@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<!--
+ACIT2520 Midterm Project
+Author: Fan Zhang
+Set: 2A
+File: createTopic.html
+
+-->
+
+	<head>
+		<title>Create Topic</title>
+		<link href="/css/style.css" rel="stylesheet" />
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+		<script>
+		function changeTextBox()
+		{
+			var val=$('#category').val();
+
+			  
+			if(val==='4'){
+				$('#url_link').removeAttr("disabled");              
+			}
+			else{
+				$('#url_link').prop('disabled', true);
+			}
+		}
+		</script>
+	</head>
+	
+	<body>
+		<!-- Header
+				New header tag to contain general banner, the image and layout were taken from the course webpage source code. 
+		-->
+		<header id="banner">
+        </header>
+		
+		<!-- Navigation 
+		-->
+			<nav id="main_nav">
+
+				<button id="Main" class="gradient" onclick="location.href='/public/main.html'" >Main &raquo;</button>
+				<button id="edit" class="gradient">Edit Profile &raquo;</button>
+				<script src="/scripts/indexbundle.js"></script>
+				<button id ="create" class="gradient">Create Topics &raquo;</button>
+				<script>
+					document.getElementById("create").addEventListener("click",function(){
+					location.href="/createtopic";
+					});
+				</script>
+				
+			</nav>
+		
+		<div id="container">
+
+				<main id="content" class="column">
+					<article>
+						
+						<h2>Create a topic</h2>
+						<p>Choose room type:
+						<select id="category" name="comparator" onChange="changeTextBox();" >
+						<option value="1">Dungeons</option>
+						<option value="2">Gears</option>
+						<option value="3">Battlegrounds</option>
+						<option value="4">Others</option>
+						</select>
+						</p>
+						<p>Input img url if others
+						<input type="text" id="url_link" value="/img/others.jpg" disabled/></p>
+						<p>Input title of your room:
+						<input type="text" placeholder="type the topic title" id="title" /><br></p>
+						<p>Input description of your room:
+						<input type="text" placeholder="type the topic description" id="description" /></p>
+						<button id='submit' class="gradient">submit</button>
+						<br>
+						<h2>Chatrooms</h2>
+						<p>Click on a room to start chat:</p>
+						<script src="/scripts/topicbundle.js"></script>
+
+					</article>								
+				</main>
+
+			</div>
+
+		<!-- Footer
+			New footer tag
+		-->
+		<footer id="footer_new">
+			<p id = "footer_p">Designed by Fan Zhang @ BCIT Acit 2520<br />
+			Copyright 2017. All rights reserved.</p>
+		</footer>
+	</body>
+</html>
